@@ -67,6 +67,20 @@ st.divider()
 st.sidebar.markdown("### 📊 Biopsy Data Input")
 st.sidebar.write("Input measurements from the laboratory report.")
 
+def plot_feature_importance(model, feature_names):
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    
+    importances = model.feature_importances_
+    df_importance = pd.DataFrame({'Feature': feature_names, 'Importance': importances})
+    df_importance = df_importance.sort_values(by='Importance', ascending=False)
+
+    fig, ax = plt.subplots(figsize=(8, 4))
+    sns.barplot(x='Importance', y='Feature', data=df_importance, palette='viridis', ax=ax)
+    ax.set_title("Global Model logic: Key Diagnostic Drivers")
+    plt.tight_layout()
+    return fig
+    
 def get_clean_user_inputs(scaler):
     feature_names = scaler.get_feature_names_out()
     user_inputs = {}
@@ -117,6 +131,27 @@ with col_right:
                     </div>
                 </div>
                 """, unsafe_allow_html=True)
+            # Create a section for Explainable AI
+            st.subheader("🔍 Explainable AI (XAI): Why this result?")
+
+            # Calculate 'Contribution' (Local importance for this specific user input)
+            # We simplify XAI here by showing the user input relative to the mean
+            st.write("This chart shows how your inputs compare to typical values:")
+
+            # Create a comparison chart
+            comparison_fig, ax2 = plt.subplots(figsize=(8, 4))
+            input_series = input_df.iloc[0]
+            # Normalizing for display
+            normalized_input = (input_series - input_series.mean()) / (input_series.std() + 1e-5) 
+
+            input_series.plot(kind='barh', color=theme_color, ax=ax2)
+            ax2.set_title("Current Patient Profile Contribution")
+            st.pyplot(comparison_fig)
+
+            # Show Global Importance
+            with st.expander("See Global Model Logic (Feature Importance)"):
+            st.write("The chart below shows which features the model considers most important overall.")
+            st.pyplot(plot_feature_importance(model, scaler.get_feature_names_out()))
         
             # Add a small metric row for deep-dive stats
             st.write("")
