@@ -123,14 +123,7 @@ with col_right:
             c1, c2 = st.columns(2)
             c1.metric("Malignancy Probability", f"{prob[0]:.1%}")
             c2.metric("Benign Probability", f"{prob[1]:.1%}")
-            else:
-                st.markdown(f"""
-                    <div style="background-color: #e8f5e9; border-left: 10px solid #2e7d32; padding: 20px; border-radius: 10px;">
-                        <h2 style="color: #2e7d32; margin:0;">Result: BENIGN</h2>
-                        <p style="color: #444; margin-top:10px;">The model predicts the tumor is likely non-cancerous.</p>
-                        <h3 style="color: #2e7d32; margin:0;">Confidence: {prob[1]:.2%}</h3>
-                    </div>
-                    """, unsafe_allow_html=True)
+            
             st.markdown("</div>", unsafe_allow_html=True)
         
 st.divider()
