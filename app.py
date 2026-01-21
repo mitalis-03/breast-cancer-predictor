@@ -96,20 +96,33 @@ with col_right:
     
     if st.button("Run Diagnostic Analysis", type="primary"):
         if model and scaler:
-            # Prediction Logic
             scaled_data = scaler.transform(input_df)
             prediction = model.predict(scaled_data)[0]
             prob = model.predict_proba(scaled_data)[0]
-            
-            st.markdown("<div class='report-card'>", unsafe_allow_html=True)
-            if prediction == 0:
-                st.markdown(f"""
-                    <div style="background-color: #ffebee; border-left: 10px solid #c62828; padding: 20px; border-radius: 10px;">
-                        <h2 style="color: #c62828; margin:0;">Result: MALIGNANT</h2>
-                        <p style="color: #444; margin-top:10px;">The model predicts a high probability of malignancy.</p>
-                        <h3 style="color: #c62828; margin:0;">Confidence: {prob[0]:.2%}</h3>
+        
+            # Determine color based on result
+            theme_color = "#c62828" if prediction == 0 else "#2e7d32"
+            bg_color = "#ffebee" if prediction == 0 else "#e8f5e9"
+            result_text = "MALIGNANT" if prediction == 0 else "BENIGN"
+            confidence = prob[0] if prediction == 0 else prob[1]
+
+            st.markdown(f"""
+                <div style="background-color: {bg_color}; border-left: 10px solid {theme_color}; padding: 25px; border-radius: 15px;">
+                    <h2 style="color: {theme_color}; margin:0;">Diagnosis: {result_text}</h2>
+                    <p style="color: #444; margin: 10px 0;">The Random Forest model has analyzed the biopsy metrics.</p>
+                    <div style="background-color: #ddd; border-radius: 20px; height: 25px; width: 100%;">
+                        <div style="background-color: {theme_color}; width: {confidence*100}%; height: 25px; border-radius: 20px; text-align: center; color: white; line-height: 25px; font-weight: bold;">
+                            {confidence:.1%} Confidence
+                        </div>
                     </div>
-                    """, unsafe_allow_html=True)
+                </div>
+                """, unsafe_allow_html=True)
+        
+            # Add a small metric row for deep-dive stats
+            st.write("")
+            c1, c2 = st.columns(2)
+            c1.metric("Malignancy Probability", f"{prob[0]:.1%}")
+            c2.metric("Benign Probability", f"{prob[1]:.1%}")
             else:
                 st.markdown(f"""
                     <div style="background-color: #e8f5e9; border-left: 10px solid #2e7d32; padding: 20px; border-radius: 10px;">
