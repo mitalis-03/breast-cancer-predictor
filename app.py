@@ -150,8 +150,8 @@ with col_right:
 
             # Show Global Importance
             with st.expander("See Global Model Logic (Feature Importance)"):
-            st.write("The chart below shows which features the model considers most important overall.")
-            st.pyplot(plot_feature_importance(model, scaler.get_feature_names_out()))
+                st.write("The chart below shows which features the model considers most important overall.")
+                st.pyplot(plot_feature_importance(model, scaler.get_feature_names_out()))
         
             # Add a small metric row for deep-dive stats
             st.write("")
