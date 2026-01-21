@@ -28,7 +28,7 @@ st.markdown("""
         color: white;
     }
     [data-testid="stSidebar"] {
-        background-color: #ffffff;
+        background-color: #334155;
         border-right: 1px solid #d1d8e0;
     }
     .report-card {
